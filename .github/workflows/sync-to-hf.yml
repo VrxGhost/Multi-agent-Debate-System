@@ -16,4 +16,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git push https://VrxGhost:$HF_TOKEN@huggingface.co/spaces/VrxGhost/YOUR_SPACE_NAME main
+          git push https://VrxGhost:$HF_TOKEN@huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System main

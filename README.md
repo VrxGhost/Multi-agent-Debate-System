@@ -1,8 +1,8 @@
 ---
 title: Multi-agent-Debate-System 
-emoji: ⚖️
-colorFrom: blue
-colorTo: green
+emoji: 📈
+colorFrom: purple
+colorTo: blue
 sdk: streamlit
 sdk_version: "1.45.0"
 app_file: app.py

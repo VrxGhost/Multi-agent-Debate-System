@@ -168,7 +168,6 @@ Gives full IDE autocomplete and type safety across all agent files without intro
 - [ ] Export debate transcript as PDF
 - [ ] Support custom system prompts per agent
 - [ ] Add speech-to-text for voice claims
-- [ ] Deploy to Streamlit Cloud
 
 ---
 

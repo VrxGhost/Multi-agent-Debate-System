@@ -17,7 +17,7 @@ with st.sidebar:
     claim = st.text_area(
         "Enter a claim to debate:",
         value="Remote work is better than working from office",
-        height=120,
+        height=130,
         help="Enter any controversial topic you want the AI agents to debate"
     )
     
@@ -74,14 +74,14 @@ if start and claim:
     st.info(f'"{claim}"')
     st.divider()
 
-    with st.spinner("🤖 Agents are debating... please wait"):
+    with st.spinner("Agents are debating... please wait"):
         result = graph.invoke(initial_state)
 
     # display each round
     for score in result["scores"]:
         r = score["round"]
 
-        st.markdown(f"## 🥊 Round {r}")
+        st.markdown(f"## ♦️ Round {r}")
 
         col1, col2 = st.columns(2)
 

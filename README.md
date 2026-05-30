@@ -162,8 +162,10 @@ Gives full IDE autocomplete and type safety across all agent files without intro
 ---
 
 ## 📸 Screenshots
+<img width="2879" height="1510" alt="Screenshot 2026-05-30 120902" src="https://github.com/user-attachments/assets/f2aae629-d912-4df1-aa24-9b43ec957b5b" />
 
-> Coming soon — run the app and see it in action!
+
+<img width="2871" height="1520" alt="image" src="https://github.com/user-attachments/assets/f51d63bc-63d3-4d3d-9ca1-403168cf77a4" />
 
 ---
 

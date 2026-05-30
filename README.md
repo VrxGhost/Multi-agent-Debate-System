@@ -1,6 +1,6 @@
 ---
 title: Multi-agent-Debate-System 
-emoji: 📈
+emoji: ⚖️
 colorFrom: purple
 colorTo: blue
 sdk: streamlit
@@ -8,17 +8,27 @@ sdk_version: "1.45.0"
 app_file: app.py
 pinned: false
 ---
+
 # ⚖️ Multi-Agent Debate System
 
 A multi-agent AI system where two LLMs argue opposing sides of any claim across multiple rounds, with a third LLM acting as an impartial judge that scores each round and declares a winner.
 
 Built with LangGraph for agent orchestration and Streamlit for the live UI.
 
+[![Live Demo](https://img.shields.io/badge/🤗%20Live%20Demo-Hugging%20Face-yellow?style=for-the-badge)](https://huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat&logo=python)
 ![LangGraph](https://img.shields.io/badge/LangGraph-latest-green?style=flat)
 ![Streamlit](https://img.shields.io/badge/Streamlit-latest-red?style=flat&logo=streamlit)
 ![Groq](https://img.shields.io/badge/Groq-Free_API-orange?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
+
+---
+
+## 🔴 Live Demo
+
+👉 **[Try it here — huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System](https://huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System)**
+
+Enter any controversial claim and watch three AI agents debate it in real time.
 
 ---
 
@@ -141,33 +151,19 @@ Multi-agent-Debate-System/
 ## 💡 Key Design Decisions
 
 **Why 3 different models?**
-Each agent uses a model suited to its role:
-- PRO uses `qwen3-32b` — strong reasoning and persuasion
-- CON uses `llama-4-scout` — fast and nuanced countering
-- Judge uses `llama-3.3-70b` — the most capable model for fair evaluation
-
-This simulates diverse reasoning styles and prevents model bias in the outcome.
+Each agent uses a model suited to its role — PRO uses `qwen3-32b` for strong reasoning and persuasion, CON uses `llama-4-scout` for fast and nuanced countering, and the Judge uses `llama-3.3-70b` as the most capable model for fair evaluation. This simulates diverse reasoning styles and prevents model bias in the debate outcome.
 
 **Why LangGraph over a simple loop?**
-LangGraph manages state transitions, conditional edges, and agent routing declaratively — making the orchestration easy to extend (e.g. adding a moderator agent or audience voting).
+LangGraph manages state transitions, conditional edges, and agent routing declaratively — making the orchestration clean, readable, and easy to extend with additional agents.
 
 **Why TypedDict for state?**
-Gives full IDE autocomplete and type safety across all agent files without introducing circular imports.
+Gives full IDE autocomplete and type safety across all agent files without introducing circular imports — keeping the codebase modular and maintainable.
 
 ---
 
 ## 📸 Screenshots
 
-> Add your screenshots here after running the app!
-
----
-
-## 🔮 Future Improvements
-
-- [ ] Add audience voting agent
-- [ ] Export debate transcript as PDF
-- [ ] Support custom system prompts per agent
-- [ ] Add speech-to-text for voice claims
+> Coming soon — run the app and see it in action!
 
 ---
 
@@ -179,6 +175,6 @@ MIT License — free to use and modify.
 
 ## 🙋 Author
 
-Built as a CV project to demonstrate multi-agent LLM orchestration with LangGraph.
+Built to demonstrate multi-agent LLM orchestration, prompt engineering, and agentic system design using free open-source models.
 
 > *"Multi-agent systems are the hottest interview topic in 2026 — this project shows you understand agent orchestration, not just prompt engineering."*

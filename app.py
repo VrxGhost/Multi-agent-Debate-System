@@ -18,7 +18,7 @@ with st.sidebar:
         "Enter a claim to debate:",
         value="Remote work is better than working from office",
         height=120,
-        help="Enter any controversial claim you want the AI agents to debate"
+        help="Enter any controversial topic you want the AI agents to debate"
     )
     
     rounds = st.slider(
@@ -32,7 +32,7 @@ with st.sidebar:
     st.divider()
     st.markdown("**Models being used:**")
     st.markdown("🔵 PRO — `llama-3.1-8b-instant`")
-    st.markdown("🔴 CON — `mixtral-8x7b-32768`")
+    st.markdown("🔴 CON — `meta-llama/llama-4-scout-17b-16e-instruct`")
     st.markdown("⚖️ JUDGE — `llama-3.3-70b-versatile`")
     st.divider()
     

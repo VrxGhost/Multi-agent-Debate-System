@@ -36,7 +36,7 @@ Enter any controversial claim and watch three AI agents debate it in real time.
 
 You enter any controversial claim — the system spins up three AI agents:
 
-- 🔵 **PRO Agent** (`qwen/qwen3-32b`) — argues strongly **for** the claim
+- 🔵 **PRO Agent** (`llama-3.1-8b-instant`) — argues strongly **for** the claim
 - 🔴 **CON Agent** (`meta-llama/llama-4-scout-17b-16e-instruct`) — argues strongly **against** the claim
 - ⚖️ **Judge Agent** (`llama-3.3-70b-versatile`) — scores each round 1–10 and declares a winner
 

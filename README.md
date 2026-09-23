@@ -36,7 +36,7 @@ Enter any controversial claim and watch three AI agents debate it in real time.
 
 You enter any controversial claim — the system spins up three AI agents:
 
-- 🔵 **PRO Agent** (`qwen/qwen3-32b`) — argues strongly **for** the claim
+- 🔵 **PRO Agent** (`llama-3.1-8b-instant`) — argues strongly **for** the claim
 - 🔴 **CON Agent** (`meta-llama/llama-4-scout-17b-16e-instruct`) — argues strongly **against** the claim
 - ⚖️ **Judge Agent** (`llama-3.3-70b-versatile`) — scores each round 1–10 and declares a winner
 
@@ -162,8 +162,10 @@ Gives full IDE autocomplete and type safety across all agent files without intro
 ---
 
 ## 📸 Screenshots
+<img width="2879" height="1510" alt="Screenshot 2026-05-30 120902" src="https://github.com/user-attachments/assets/f2aae629-d912-4df1-aa24-9b43ec957b5b" />
 
-> Coming soon — run the app and see it in action!
+
+<img width="2871" height="1520" alt="image" src="https://github.com/user-attachments/assets/f51d63bc-63d3-4d3d-9ca1-403168cf77a4" />
 
 ---
 

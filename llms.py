@@ -10,7 +10,7 @@ pro_llm = ChatGroq(
 )
 
 con_llm = ChatGroq(
-    model="qwen/qwen3.6-27b",
+    model="qwen/qwen3.8-27b",
     api_key=os.getenv("GROQ_API_KEY")
 )
 

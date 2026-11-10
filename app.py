@@ -21,6 +21,9 @@ from debate_graph import build_graph # noqa: E402  (needs the key, so it must co
 
 from llms import MODELS  # noqa: E402
 
+MAX_CLAIM_CHARS = 600
+MAX_ROUNDS = max(2, int(os.getenv("MAX_ROUNDS", "10")))  # e.g. MAX_ROUNDS=5 in Space settings; the slider needs at least 2
+
 with st.sidebar:
     st.header("⚙️ Debate Settings")
     st.divider()
@@ -29,14 +32,14 @@ with st.sidebar:
         "Enter a claim to debate:",
         value="Remote work is better than working from office",
         height=130,
+        max_chars=MAX_CLAIM_CHARS,
         help="Enter any controversial topic you want the AI agents to debate"
     )
     
     rounds = st.slider(
         "Number of rounds:",
-        min_value=1,
-        max_value=10,
-        value=3,
+        max_value=MAX_ROUNDS,
+        value=min(3, MAX_ROUNDS),
         help="More rounds = longer debate"
     )
     
@@ -52,6 +55,10 @@ with st.sidebar:
         type="primary",
         use_container_width=True
     )
+claim = claim.strip()[:MAX_CLAIM_CHARS]
+if start and not claim:
+    st.warning("Please enter a claim to debate first.")
+    st.stop()
 
 if not start:
     st.info("👈 Set your claim and number of rounds in the sidebar, then click Start Debate!")
@@ -67,7 +74,7 @@ if not start:
         st.markdown("### ⚖️ Judge Agent")
         st.write("Scores each round and declares the overall winner")
 
-if start and claim:
+if start:
     graph = build_graph()
 
     initial_state = {

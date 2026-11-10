@@ -19,6 +19,8 @@ if not os.getenv("GROQ_API_KEY"):
 
 from debate_graph import build_graph # noqa: E402  (needs the key, so it must come after the check)
 
+from llms import MODELS  # noqa: E402
+
 with st.sidebar:
     st.header("⚙️ Debate Settings")
     st.divider()

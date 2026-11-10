@@ -15,9 +15,9 @@ if not os.getenv("GROQ_API_KEY"):
         "GROQ_API_KEY is not set. Copy .env.example to .env and paste your Groq key into it. "
         "On Hugging Face, add it under Space settings > Variables and secrets."
     )
-    st.stop()\
+    st.stop()
 
-from debate_graph import build_graph
+from debate_graph import build_graph # noqa: E402  (needs the key, so it must come after the check)
 
 with st.sidebar:
     st.header("⚙️ Debate Settings")

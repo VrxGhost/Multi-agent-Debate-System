@@ -51,6 +51,51 @@ def show_round(score, pro_argument, con_argument):
     st.caption(f"🧠 Judge's reasoning: {score['reason']}")
     st.divider()
 
+
+def show_topic(claim):
+    """Draw the claim being debated."""
+    st.markdown("## 📋 Debate Topic")
+    st.info(f'"{claim}"')
+    st.divider()
+
+
+def show_final_result(result):
+    """Draw the overall winner and the full debate log of a finished debate."""
+    st.markdown("## 🏆 Final Result")
+
+    pro_wins = sum(1 for s in result["scores"] if s["winner"] == "PRO")
+    con_wins = sum(1 for s in result["scores"] if s["winner"] == "CON")
+    winner = result["winner"]
+
+    w1, w2, w3 = st.columns(3)
+    with w1:
+        st.metric("Rounds won by PRO", pro_wins)
+    with w2:
+        st.metric("Rounds won by CON", con_wins)
+    with w3:
+        st.metric("🏆 Winner", winner)
+    st.caption("The side that wins more rounds wins the debate. Tied rounds count for neither side.")
+
+    if winner == "PRO":
+        st.success("🏆 PRO side wins the debate!")
+    elif winner == "CON":
+        st.error("🏆 CON side wins the debate!")
+    else:
+        st.warning("🤝 It's a TIE!")
+
+    with st.expander("📜 View Full Debate Log"):
+        for entry in result["debate_log"]:
+            if entry["side"] == "PRO":
+                st.markdown(f"**🔵 PRO — Round {entry['round']}**")
+                st.info(entry["argument"])
+            elif entry["side"] == "CON":
+                st.markdown(f"**🔴 CON — Round {entry['round']}**")
+                st.error(entry["argument"])
+            elif entry["side"] == "JUDGE":
+                st.markdown(f"**⚖️ JUDGE — Round {entry['round']}**")
+                st.warning(entry["argument"])
+
+
 with st.sidebar:
     st.header("⚙️ Debate Settings")
     st.divider()
@@ -72,12 +117,13 @@ with st.sidebar:
     )
     
     st.divider()
+
     st.markdown("**Models being used:**")
     st.markdown(f"🔵 PRO — `{MODELS['PRO']}`")
     st.markdown(f"🔴 CON — `{MODELS['CON']}`")
     st.markdown(f"⚖️ JUDGE — `{MODELS['JUDGE']}`")
     st.divider()
-    
+
     start = st.button(
         "🚀 Start Debate",
         type="primary",
@@ -88,21 +134,8 @@ if start and not claim:
     st.warning("Please enter a claim to debate first.")
     st.stop()
 
-if not start:
-    st.info("👈 Set your claim and number of rounds in the sidebar, then click Start Debate!")
-    
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("### 🔵 PRO Agent")
-        st.write("Argues strongly FOR the claim")
-    with col2:
-        st.markdown("### 🔴 CON Agent")
-        st.write("Argues strongly AGAINST the claim")
-    with col3:
-        st.markdown("### ⚖️ Judge Agent")
-        st.write("Scores each round and declares the overall winner")
-
 if start:
+    st.session_state.pop("debate", None)  # a new debate starts, so forget the old one
     graph = build_graph()
 
     initial_state = {
@@ -116,9 +149,7 @@ if start:
         "debate_log": []
     }
 
-    st.markdown(f"## 📋 Debate Topic")
-    st.info(f'"{claim}"')
-    st.divider()
+    show_topic(claim)
 
     shown = 0  # how many rounds are already on the screen
     try:
@@ -147,39 +178,27 @@ if start:
         st.error("The debate ran more steps than expected and was stopped. This is a bug, please report it.")
         st.stop()
 
+    st.session_state["debate"] = result  # remember the finished debate for later reruns
+    show_final_result(result)
 
-    # final winner
-    st.markdown("## 🏆 Final Result")
+elif "debate" in st.session_state:
+    result = st.session_state["debate"]  # the last finished debate, redrawn without any API calls
+    st.caption("🔁 This is your last debate. Click Start Debate to run a new one.")
+    show_topic(result["claim"])
+    for i, score in enumerate(result["scores"]):
+        show_round(score, result["pro_arguments"][i], result["con_arguments"][i])
+    show_final_result(result)
 
-    pro_wins = sum(1 for s in result["scores"] if s["winner"] == "PRO")
-    con_wins = sum(1 for s in result["scores"] if s["winner"] == "CON")
-    winner = result["winner"]
+else:
+    st.info("👈 Set your claim and number of rounds in the sidebar, then click Start Debate!")
 
-    w1, w2, w3 = st.columns(3)
-    with w1:
-        st.metric("Rounds won by PRO", pro_wins)
-    with w2:
-        st.metric("Rounds won by CON", con_wins)
-    with w3:
-        st.metric("🏆 Winner", winner)
-    st.caption("The side that wins more rounds wins the debate. Tied rounds count for neither side.")
-
-    if winner == "PRO":
-        st.success("🏆 PRO side wins the debate!")
-    elif winner == "CON":
-        st.error("🏆 CON side wins the debate!")
-    else:
-        st.warning("🤝 It's a TIE!")
-
-    # debate log expander
-    with st.expander("📜 View Full Debate Log"):
-        for entry in result["debate_log"]:
-            if entry["side"] == "PRO":
-                st.markdown(f"**🔵 PRO — Round {entry['round']}**")
-                st.info(entry["argument"])
-            elif entry["side"] == "CON":
-                st.markdown(f"**🔴 CON — Round {entry['round']}**")
-                st.error(entry["argument"])
-            elif entry["side"] == "JUDGE":
-                st.markdown(f"**⚖️ JUDGE — Round {entry['round']}**")
-                st.warning(entry["argument"])
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("### 🔵 PRO Agent")
+        st.write("Argues strongly FOR the claim")
+    with col2:
+        st.markdown("### 🔴 CON Agent")
+        st.write("Argues strongly AGAINST the claim")
+    with col3:
+        st.markdown("### ⚖️ Judge Agent")
+        st.write("Scores each round and declares the overall winner")

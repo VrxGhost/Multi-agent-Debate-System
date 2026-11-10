@@ -45,7 +45,7 @@ def judge_agent(state):
             "ROUND_WINNER: PRO, CON or TIE\n"
             "REASON: <one sentence>"
         )),
-        HumanMessage(content=f"PRO: {pro}\nCON: {con}")
+        HumanMessage(content=f"Claim: {state['claim']}\n\nPRO argument: {pro}\n\nCON argument: {con}"),
     ])
     score = parse_verdict(response.text, state["current_round"])
     state["scores"].append(score)   # ← saves score to state

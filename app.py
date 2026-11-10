@@ -40,9 +40,9 @@ with st.sidebar:
     
     st.divider()
     st.markdown("**Models being used:**")
-    st.markdown("🔵 PRO — `openai/gpt-oss-20b`")
-    st.markdown("🔴 CON — `meta-llama/llama-4-scout-17b-16e-instruct`")
-    st.markdown("⚖️ JUDGE — `llama-3.3-70b-versatile`")
+    st.markdown(f"🔵 PRO — `{MODELS['PRO']}`")
+    st.markdown(f"🔴 CON — `{MODELS['CON']}`")
+    st.markdown(f"⚖️ JUDGE — `{MODELS['JUDGE']}`")
     st.divider()
     
     start = st.button(
@@ -57,10 +57,10 @@ if not start:
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("### 🔵 PRO Agent")
-        st.write("Argues strongly FOR the claim using fast Llama model")
+        st.write("Argues strongly FOR the claim")
     with col2:
         st.markdown("### 🔴 CON Agent")
-        st.write("Argues strongly AGAINST the claim using Mixtral model")
+        st.write("Argues strongly AGAINST the claim")
     with col3:
         st.markdown("### ⚖️ Judge Agent")
         st.write("Scores each round and declares the overall winner")

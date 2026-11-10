@@ -1,20 +1,15 @@
-from langchain_groq import ChatGroq
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
 
 load_dotenv()
 
-pro_llm = ChatGroq(
-    model="openai/gpt-oss-20b",
-    api_key=os.getenv("GROQ_API_KEY")
-)
+MODELS = {
+    "PRO": os.getenv("PRO_MODEL", "openai/gpt-oss-20b"),
+    "CON": os.getenv("CON_MODEL", "qwen/qwen3.8-27b"),
+    "JUDGE": os.getenv("JUDGE_MODEL", "openai/gpt-oss-120b"),
+}
 
-con_llm = ChatGroq(
-    model="qwen/qwen3.8-27b",
-    api_key=os.getenv("GROQ_API_KEY")
-)
-
-judge_llm = ChatGroq(
-    model="openai/gpt-oss-120b",
-    api_key=os.getenv("GROQ_API_KEY")
-)
+pro_llm = ChatGroq(model=MODELS["PRO"])
+con_llm = ChatGroq(model=MODELS["CON"])
+judge_llm = ChatGroq(model=MODELS["JUDGE"])

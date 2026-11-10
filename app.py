@@ -1,6 +1,7 @@
+import os
 import streamlit as st
-from debate_graph import build_graph
-
+from dotenv import load_dotenv
+load_dotenv()
 st.set_page_config(
     page_title="AI Debate Arena",
     page_icon="⚖️",
@@ -9,6 +10,14 @@ st.set_page_config(
 
 st.title("⚖️ Multi-Agent Debate Arena")
 st.caption("Two LLMs argue a claim across multiple rounds. A judge scores each round and declares a winner.")
+if not os.getenv("GROQ_API_KEY"):
+    st.error(
+        "GROQ_API_KEY is not set. Copy .env.example to .env and paste your Groq key into it. "
+        "On Hugging Face, add it under Space settings > Variables and secrets."
+    )
+    st.stop()\
+
+from debate_graph import build_graph
 
 with st.sidebar:
     st.header("⚙️ Debate Settings")
@@ -31,7 +40,7 @@ with st.sidebar:
     
     st.divider()
     st.markdown("**Models being used:**")
-    st.markdown("🔵 PRO — `llama-3.1-8b-instant`")
+    st.markdown("🔵 PRO — `openai/gpt-oss-20b`")
     st.markdown("🔴 CON — `meta-llama/llama-4-scout-17b-16e-instruct`")
     st.markdown("⚖️ JUDGE — `llama-3.3-70b-versatile`")
     st.divider()

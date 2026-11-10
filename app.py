@@ -38,6 +38,7 @@ with st.sidebar:
     
     rounds = st.slider(
         "Number of rounds:",
+        min_value = 1,
         max_value=MAX_ROUNDS,
         value=min(3, MAX_ROUNDS),
         help="More rounds = longer debate"

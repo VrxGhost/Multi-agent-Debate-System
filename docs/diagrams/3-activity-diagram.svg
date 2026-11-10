@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1200" viewBox="0 0 960 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Activity diagram: what happens on every run of app.py</title>
+  <desc id="desc">Streamlit runs app.py from top to bottom on every interaction. Without an API key it shows a message and stops. Otherwise it draws the sidebar. If Start Debate was not clicked it redraws the saved debate or shows the welcome screen. A blank claim shows a warning. Otherwise the graph streams PRO, CON and judge turns, drawing each round as soon as it is scored and looping while rounds remain. The verdict counts rounds won, the debate is saved in session state and the final result is shown. Groq errors, unreadable judge replies and the step limit show a friendly message and keep the finished rounds.</desc>
+  <style>
+    svg {
+      --bg: #ffffff; --border: #d0d7de; --fg: #1f2328; --muted: #59636e; --line: #57606a;
+      --ui-f: #ffeff7; --ui-s: #bf3989; --graph-f: #dafbe1; --graph-s: #1a7f37;
+      --pro-f: #ddf4ff; --pro-s: #0969da; --con-f: #ffebe9; --con-s: #cf222e;
+      --judge-f: #fff8c5; --judge-s: #9a6700; --stop-f: #f6f8fa; --stop-s: #8c959f;
+    }
+    @media (prefers-color-scheme: dark) {
+      svg {
+        --bg: #0d1117; --border: #30363d; --fg: #e6edf3; --muted: #9198a1; --line: #8b949e;
+        --ui-f: #2b1121; --ui-s: #db61a2; --graph-f: #0f2a19; --graph-s: #3fb950;
+        --pro-f: #0c2d6b; --pro-s: #58a6ff; --con-f: #3d1214; --con-s: #f85149;
+        --judge-f: #2e2408; --judge-s: #d29922; --stop-f: #161b22; --stop-s: #6e7681;
+      }
+    }
+    .bg { fill: var(--bg); stroke: var(--border); }
+    text { fill: var(--fg); font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Noto Sans", Helvetica, Arial, sans-serif; font-size: 13.5px; }
+    .b { font-weight: 600; }
+    .s { fill: var(--muted); font-size: 12.5px; }
+    .m { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+    .cap { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; fill: var(--muted); }
+    .box { stroke-width: 1.5; }
+    .ui { fill: var(--ui-f); stroke: var(--ui-s); }
+    .graph { fill: var(--graph-f); stroke: var(--graph-s); }
+    .pro { fill: var(--pro-f); stroke: var(--pro-s); }
+    .con { fill: var(--con-f); stroke: var(--con-s); }
+    .judge { fill: var(--judge-f); stroke: var(--judge-s); }
+    .stop { fill: var(--stop-f); stroke: var(--stop-s); }
+    .err { fill: var(--stop-f); stroke: var(--con-s); stroke-dasharray: 6 4; }
+    .dec { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+    .node { fill: var(--fg); }
+    .ring { fill: none; stroke: var(--fg); stroke-width: 1.6; }
+    .edge { fill: none; stroke: var(--line); stroke-width: 1.6; }
+    .dash { stroke-dasharray: 6 4; }
+    .head { fill: var(--line); }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="959" height="1199" rx="12"/>
+
+  <!-- Legend -->
+  <text class="cap" x="660" y="34">LEGEND</text>
+  <rect class="box ui" x="660" y="44" width="16" height="12" rx="3"/>
+  <text class="s" x="684" y="55">Streamlit app (app.py)</text>
+  <rect class="box graph" x="660" y="66" width="16" height="12" rx="3"/>
+  <text class="s" x="684" y="77">LangGraph (debate_graph.py)</text>
+  <rect class="box pro" x="660" y="88" width="16" height="12" rx="3"/>
+  <rect class="box con" x="680" y="88" width="16" height="12" rx="3"/>
+  <rect class="box judge" x="700" y="88" width="16" height="12" rx="3"/>
+  <text class="s" x="724" y="99">a Groq model call</text>
+
+  <!-- Start -->
+  <circle class="node" cx="400" cy="34" r="10"/>
+  <text class="s" x="380" y="39" text-anchor="end">Visitor opens the Space or changes any widget</text>
+  <path class="edge" d="M400,44 V62" marker-end="url(#ah)"/>
+
+  <rect class="box ui" x="210" y="64" width="380" height="44" rx="10"/>
+  <text x="400" y="91" text-anchor="middle">Streamlit runs <tspan class="m">app.py</tspan> from top to bottom</text>
+  <path class="edge" d="M400,108 V126" marker-end="url(#ah)"/>
+
+  <!-- D1: API key -->
+  <polygon class="dec" points="400,128 530,170 400,212 270,170"/>
+  <text x="400" y="175" text-anchor="middle"><tspan class="m">GROQ_API_KEY</tspan> set?</text>
+  <path class="edge" d="M530,170 H638" marker-end="url(#ah)"/>
+  <text class="s" x="544" y="162">no</text>
+  <rect class="box stop" x="640" y="140" width="296" height="60" rx="10"/>
+  <text x="788" y="165" text-anchor="middle">Show “GROQ_API_KEY is not set”</text>
+  <text x="788" y="185" text-anchor="middle">and stop</text>
+  <path class="edge" d="M788,200 V214" marker-end="url(#ah)"/>
+  <circle class="ring" cx="788" cy="226" r="10"/><circle class="node" cx="788" cy="226" r="5.5"/>
+  <path class="edge" d="M400,212 V234" marker-end="url(#ah)"/>
+  <text class="s" x="410" y="228">yes</text>
+
+  <rect class="box ui" x="210" y="236" width="380" height="56" rx="10"/>
+  <text x="400" y="259" text-anchor="middle">Draw the sidebar: claim box (≤ 600 chars),</text>
+  <text x="400" y="279" text-anchor="middle">rounds slider (1–10) and the three model names</text>
+  <path class="edge" d="M400,292 V310" marker-end="url(#ah)"/>
+
+  <!-- D2: Start clicked? -->
+  <polygon class="dec" points="400,312 530,354 400,396 270,354"/>
+  <text x="400" y="359" text-anchor="middle">Start Debate clicked?</text>
+  <path class="edge" d="M530,354 H666" marker-end="url(#ah)"/>
+  <text class="s" x="544" y="346">no</text>
+
+  <!-- D3: saved debate? -->
+  <polygon class="dec" points="788,312 908,354 788,396 668,354"/>
+  <text x="788" y="350" text-anchor="middle">Saved debate in</text>
+  <text class="m" x="788" y="368" text-anchor="middle">session_state?</text>
+  <path class="edge" d="M788,396 V418" marker-end="url(#ah)"/>
+  <text class="s" x="798" y="412">yes</text>
+  <rect class="box ui" x="668" y="420" width="240" height="52" rx="10"/>
+  <text x="788" y="442" text-anchor="middle">Redraw the last debate</text>
+  <text class="s" x="788" y="461" text-anchor="middle">0 API calls, with a short note</text>
+  <path class="edge" d="M788,472 V486" marker-end="url(#ah)"/>
+  <circle class="ring" cx="788" cy="498" r="10"/><circle class="node" cx="788" cy="498" r="5.5"/>
+  <path class="edge" d="M908,354 H926 V546 H910" marker-end="url(#ah)"/>
+  <text class="s" x="914" y="346">no</text>
+  <rect class="box ui" x="668" y="520" width="240" height="52" rx="10"/>
+  <text x="788" y="542" text-anchor="middle">Show the welcome screen</text>
+  <text class="s" x="788" y="561" text-anchor="middle">what the three agents do</text>
+  <path class="edge" d="M788,572 V586" marker-end="url(#ah)"/>
+  <circle class="ring" cx="788" cy="598" r="10"/><circle class="node" cx="788" cy="598" r="5.5"/>
+
+  <path class="edge" d="M400,396 V418" marker-end="url(#ah)"/>
+  <text class="s" x="410" y="412">yes</text>
+
+  <!-- D4: blank claim? -->
+  <polygon class="dec" points="400,420 530,462 400,504 270,462"/>
+  <text x="400" y="458" text-anchor="middle">Claim empty</text>
+  <text x="400" y="476" text-anchor="middle">after <tspan class="m">strip()</tspan>?</text>
+  <path class="edge" d="M270,462 H202" marker-end="url(#ah)"/>
+  <text class="s" x="258" y="454" text-anchor="end">yes</text>
+  <rect class="box stop" x="24" y="432" width="176" height="60" rx="10"/>
+  <text x="112" y="457" text-anchor="middle">Show a warning,</text>
+  <text x="112" y="477" text-anchor="middle">make no API calls</text>
+  <path class="edge" d="M112,492 V506" marker-end="url(#ah)"/>
+  <circle class="ring" cx="112" cy="518" r="10"/><circle class="node" cx="112" cy="518" r="5.5"/>
+  <path class="edge" d="M400,504 V526" marker-end="url(#ah)"/>
+  <text class="s" x="410" y="520">no</text>
+
+  <rect class="box ui" x="210" y="528" width="380" height="44" rx="10"/>
+  <text x="400" y="555" text-anchor="middle">Forget the saved debate, show the topic</text>
+  <path class="edge" d="M400,572 V590" marker-end="url(#ah)"/>
+
+  <rect class="box graph" x="210" y="592" width="380" height="44" rx="10"/>
+  <text x="400" y="619" text-anchor="middle"><tspan class="m">graph.stream()</tspan>, step limit 3 × rounds + 5</text>
+  <path class="edge" d="M400,636 V654" marker-end="url(#ah)"/>
+
+  <!-- The round -->
+  <rect class="box pro" x="210" y="656" width="380" height="44" rx="10"/>
+  <text x="400" y="683" text-anchor="middle"><tspan class="b">PRO</tspan> argues for the claim <tspan class="s m">gpt-oss-20b</tspan></text>
+  <path class="edge" d="M400,700 V716" marker-end="url(#ah)"/>
+  <rect class="box con" x="210" y="718" width="380" height="44" rx="10"/>
+  <text x="400" y="745" text-anchor="middle"><tspan class="b">CON</tspan> argues against it <tspan class="s m">qwen3.8-27b</tspan></text>
+  <path class="edge" d="M400,762 V778" marker-end="url(#ah)"/>
+  <rect class="box judge" x="210" y="780" width="380" height="56" rx="10"/>
+  <text x="400" y="803" text-anchor="middle"><tspan class="b">Judge</tspan> scores both sides 1–10 <tspan class="s m">gpt-oss-120b</tspan></text>
+  <text x="400" y="823" text-anchor="middle"><tspan class="m">parse_verdict()</tspan>: the higher score wins</text>
+  <path class="edge" d="M400,836 V854" marker-end="url(#ah)"/>
+  <rect class="box ui" x="210" y="856" width="380" height="44" rx="10"/>
+  <text x="400" y="883" text-anchor="middle">Draw the finished round on the page</text>
+  <path class="edge" d="M400,900 V918" marker-end="url(#ah)"/>
+
+  <!-- D5: more rounds? -->
+  <polygon class="dec" points="400,920 530,962 400,1004 270,962"/>
+  <text x="400" y="967" text-anchor="middle">More rounds left?</text>
+  <path class="edge" d="M270,962 H180 V678 H208" marker-end="url(#ah)"/>
+  <text class="s" x="258" y="954" text-anchor="end">yes</text>
+  <text class="s" x="172" y="814" text-anchor="end">next</text>
+  <text class="s" x="172" y="830" text-anchor="end">round</text>
+  <path class="edge" d="M400,1004 V1026" marker-end="url(#ah)"/>
+  <text class="s" x="410" y="1020">no</text>
+
+  <rect class="box graph" x="210" y="1028" width="380" height="44" rx="10"/>
+  <text x="400" y="1055" text-anchor="middle"><tspan class="m">verdict</tspan>: count rounds won → PRO, CON or TIE</text>
+  <path class="edge" d="M400,1072 V1090" marker-end="url(#ah)"/>
+  <rect class="box ui" x="210" y="1092" width="380" height="56" rx="10"/>
+  <text x="400" y="1115" text-anchor="middle">Save the debate in <tspan class="m">st.session_state</tspan>,</text>
+  <text x="400" y="1135" text-anchor="middle">show the Final Result and the debate log</text>
+  <path class="edge" d="M400,1148 V1164" marker-end="url(#ah)"/>
+  <circle class="ring" cx="400" cy="1176" r="10"/><circle class="node" cx="400" cy="1176" r="5.5"/>
+
+  <!-- Errors during the round -->
+  <path class="edge" d="M596,660 H606 V832 H596"/>
+  <path class="edge dash" d="M606,746 H666" marker-end="url(#ah)"/>
+  <text class="s" x="636" y="738" text-anchor="middle">on error</text>
+  <rect class="box err" x="668" y="698" width="268" height="96" rx="10"/>
+  <text x="684" y="722">Groq error (bad key, rate limit,</text>
+  <text x="684" y="742">retired model), a judge reply with</text>
+  <text x="684" y="762">no scores, or the step limit: show</text>
+  <text x="684" y="782">a clear message, keep the rounds</text>
+  <path class="edge" d="M802,794 V808" marker-end="url(#ah)"/>
+  <circle class="ring" cx="802" cy="820" r="10"/><circle class="node" cx="802" cy="820" r="5.5"/>
+</svg>

@@ -13,18 +13,17 @@ pinned: false
 
 Two LLM agents argue opposite sides of any claim for up to 10 rounds, and a third LLM judges every round. Built with LangGraph and Streamlit, running on Groq's free API and deployed on Hugging Face Spaces.
 
-[![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80_Live_Demo-HuggingFace_Spaces-orange)](https://huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System) [![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org) [![LangGraph](https://img.shields.io/badge/Agents-LangGraph-green)](https://langchain-ai.github.io/langgraph/) [![Streamlit](https://img.shields.io/badge/App-Streamlit-red)](https://streamlit.io) [![Groq](https://img.shields.io/badge/LLMs-Groq-F55036)](https://console.groq.com) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80_Live_Demo-HuggingFace_Spaces-orange)](https://huggingface.co/spaces/VrxGhost/Multi-Agent-Debate-System) [![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org) [![LangGraph](https://img.shields.io/badge/Agents-LangGraph-green)](https://langchain-ai.github.io/langgraph/) [![Streamlit](https://img.shields.io/badge/App-Streamlit-red)](https://streamlit.io) [![Groq](https://img.shields.io/badge/LLMs-Groq-F55036)](https://console.groq.com)
 
-<!-- Screenshots: replace each SCREENSHOT-…-LINK below with that image's github.com/user-attachments link -->
-<img width="2879" height="1400" alt="Debate settings in the sidebar and round 1 of a debate on remote work" src="SCREENSHOT-1-LINK" />
+<img width="2879" height="1400" alt="Debate settings in the sidebar and round 1 of a debate on remote work" src="https://raw.githubusercontent.com/VrxGhost/Multi-agent-Debate-System/assets/screenshots/1-sidebar-and-round-1.png" />
 
 *Pick a claim and 1–10 rounds in the sidebar, which also lists the three models in use. Each round appears as soon as the judge has scored it.*
 
-<img width="2876" height="1225" alt="Round 2: PRO and CON arguments side by side with the judge's scores and reasoning" src="SCREENSHOT-2-LINK" />
+<img width="2876" height="1225" alt="Round 2: PRO and CON arguments side by side with the judge's scores and reasoning" src="https://raw.githubusercontent.com/VrxGhost/Multi-agent-Debate-System/assets/screenshots/2-round-2.png" />
 
 *Every round shows both arguments side by side, the judge's scores out of 10, the round winner and a one-sentence reason.*
 
-<img width="2819" height="1484" alt="Round 3 and the final result: PRO wins 3 rounds to 0" src="SCREENSHOT-3-LINK" />
+<img width="2819" height="1484" alt="Round 3 and the final result: PRO wins 3 rounds to 0" src="https://raw.githubusercontent.com/VrxGhost/Multi-agent-Debate-System/assets/screenshots/3-final-result.png" />
 
 *The final result counts rounds won (3–0 for PRO here), and the full PRO → CON → JUDGE log is one click away.*
 
@@ -227,12 +226,6 @@ and open http://localhost:8501.
 - [ ] Partial state updates with LangGraph reducers
 - [ ] Give the debaters the full debate history
 - [ ] Structured output for the judge, so there is nothing to parse
-
----
-
-## 📄 License
-
-MIT. See [LICENSE](LICENSE).
 
 ---
 

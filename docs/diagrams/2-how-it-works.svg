@@ -2,42 +2,22 @@
   <title id="title">How a debate runs: the LangGraph loop and its shared state</title>
   <desc id="desc">START goes to the pro node, then con, then judge. should_continue loops back to pro while rounds remain, otherwise the verdict node counts rounds won and the graph ends. The nodes share a DebateState dictionary. The judge's free-text reply is turned into scores by parse_verdict, and app.py streams the state to draw each round live.</desc>
   <style>
-    svg {
-      --bg: #ffffff; --border: #d0d7de; --fg: #1f2328; --muted: #59636e; --line: #57606a;
-      --ui-f: #ffeff7; --ui-s: #bf3989; --graph-f: #dafbe1; --graph-s: #1a7f37;
-      --pro-f: #ddf4ff; --pro-s: #0969da; --con-f: #ffebe9; --con-s: #cf222e;
-      --judge-f: #fff8c5; --judge-s: #9a6700; --llm-f: #f6f8fa; --llm-s: #6e7781;
-      --code-f: #ffffff;
-    }
+    svg { --bg: #ffffff; --border: #d0d7de; --fg: #1f2328; --muted: #57606a; --stroke: #24292f; --soft: #8c959f; }
     @media (prefers-color-scheme: dark) {
-      svg {
-        --bg: #0d1117; --border: #30363d; --fg: #e6edf3; --muted: #9198a1; --line: #8b949e;
-        --ui-f: #2b1121; --ui-s: #db61a2; --graph-f: #0f2a19; --graph-s: #3fb950;
-        --pro-f: #0c2d6b; --pro-s: #58a6ff; --con-f: #3d1214; --con-s: #f85149;
-        --judge-f: #2e2408; --judge-s: #d29922; --llm-f: #161b22; --llm-s: #8b949e;
-        --code-f: #0d1117;
-      }
+      svg { --bg: #0d1117; --border: #30363d; --fg: #e6edf3; --muted: #9198a1; --stroke: #c9d1d9; --soft: #6e7681; }
     }
     .bg { fill: var(--bg); stroke: var(--border); }
-    text { fill: var(--fg); font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Noto Sans", Helvetica, Arial, sans-serif; font-size: 13.5px; }
-    .t { font-size: 15px; font-weight: 600; }
-    .b { font-weight: 600; }
+    text { fill: var(--fg); font-family: Helvetica, Arial, sans-serif; font-size: 13.5px; }
+    .b { font-weight: bold; }
     .s { fill: var(--muted); font-size: 12.5px; }
-    .m { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-    .cap { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; }
-    .box { stroke-width: 1.5; }
-    .ui { fill: var(--ui-f); stroke: var(--ui-s); }
-    .graph { fill: var(--graph-f); stroke: var(--graph-s); }
-    .pro { fill: var(--pro-f); stroke: var(--pro-s); }
-    .con { fill: var(--con-f); stroke: var(--con-s); }
-    .judge { fill: var(--judge-f); stroke: var(--judge-s); }
-    .llm { fill: var(--llm-f); stroke: var(--llm-s); }
-    .code { fill: var(--code-f); stroke: var(--border); stroke-width: 1; }
+    .m { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .cap { font-size: 11.5px; font-weight: bold; letter-spacing: 0.08em; }
+    .box { fill: var(--bg); stroke: var(--stroke); stroke-width: 1.4; }
+    .code { fill: var(--bg); stroke: var(--soft); stroke-width: 1; }
     .term { fill: var(--fg); }
     .term-t { fill: var(--bg); }
-    .pro-t { fill: var(--pro-s); } .con-t { fill: var(--con-s); } .judge-t { fill: var(--judge-s); } .graph-t { fill: var(--graph-s); }
-    .edge { fill: none; stroke: var(--line); stroke-width: 1.6; }
-    .head { fill: var(--line); }
+    .edge { fill: none; stroke: var(--stroke); stroke-width: 1.4; }
+    .head { fill: var(--stroke); }
   </style>
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -45,34 +25,34 @@
     </marker>
   </defs>
 
-  <rect class="bg" x="0.5" y="0.5" width="959" height="711" rx="12"/>
+  <rect class="bg" x="0.5" y="0.5" width="959" height="711" rx="8"/>
 
   <!-- ============ The graph (left) ============ -->
   <rect class="term" x="266" y="20" width="100" height="30" rx="15"/>
   <text class="cap term-t" x="316" y="40" text-anchor="middle">START</text>
   <path class="edge" d="M316,50 V74" marker-end="url(#ah)"/>
 
-  <rect class="box pro" x="96" y="76" width="440" height="92" rx="12"/>
-  <text x="112" y="100"><tspan class="m b pro-t">pro</tspan><tspan class="s m" dx="10">openai/gpt-oss-20b</tspan></text>
+  <rect class="box" x="96" y="76" width="440" height="92" rx="6"/>
+  <text x="112" y="100"><tspan class="m b">pro</tspan><tspan class="s m" dx="10">openai/gpt-oss-20b</tspan></text>
   <text x="112" y="124">Reads the claim and CON’s last argument (from round 2)</text>
   <text x="112" y="147">Adds its argument to <tspan class="m">pro_arguments</tspan> and <tspan class="m">debate_log</tspan></text>
   <path class="edge" d="M316,168 V192" marker-end="url(#ah)"/>
 
-  <rect class="box con" x="96" y="194" width="440" height="92" rx="12"/>
-  <text x="112" y="218"><tspan class="m b con-t">con</tspan><tspan class="s m" dx="10">qwen/qwen3.8-27b</tspan></text>
+  <rect class="box" x="96" y="194" width="440" height="92" rx="6"/>
+  <text x="112" y="218"><tspan class="m b">con</tspan><tspan class="s m" dx="10">qwen/qwen3.8-27b</tspan></text>
   <text x="112" y="242">Reads the claim and PRO’s newest argument</text>
   <text x="112" y="265">Adds its argument to <tspan class="m">con_arguments</tspan> and <tspan class="m">debate_log</tspan></text>
   <path class="edge" d="M316,286 V310" marker-end="url(#ah)"/>
 
-  <rect class="box judge" x="96" y="312" width="440" height="114" rx="12"/>
-  <text x="112" y="336"><tspan class="m b judge-t">judge</tspan><tspan class="s m" dx="10">openai/gpt-oss-120b</tspan></text>
+  <rect class="box" x="96" y="312" width="440" height="114" rx="6"/>
+  <text x="112" y="336"><tspan class="m b">judge</tspan><tspan class="s m" dx="10">openai/gpt-oss-120b</tspan></text>
   <text x="112" y="360">Reads the claim and both arguments of this round</text>
   <text x="112" y="383"><tspan class="m">parse_verdict()</tspan> turns its reply into scores (1–10)</text>
   <text x="112" y="406">Adds to <tspan class="m">scores</tspan> and <tspan class="m">debate_log</tspan>, then <tspan class="m">current_round + 1</tspan></text>
   <path class="edge" d="M316,426 V448" marker-end="url(#ah)"/>
 
-  <polygon class="box graph" points="316,450 466,496 316,542 166,496"/>
-  <text class="m b graph-t" x="316" y="491" text-anchor="middle">should_continue</text>
+  <polygon class="box" points="316,450 466,496 316,542 166,496"/>
+  <text class="m b" x="316" y="491" text-anchor="middle">should_continue</text>
   <text x="316" y="511" text-anchor="middle">current_round ≤ rounds ?</text>
 
   <path class="edge" d="M166,496 H60 V122 H94" marker-end="url(#ah)"/>
@@ -83,15 +63,15 @@
   <path class="edge" d="M316,542 V564" marker-end="url(#ah)"/>
   <text class="s" x="326" y="559">no: end</text>
 
-  <rect class="box graph" x="96" y="566" width="440" height="70" rx="12"/>
-  <text x="112" y="590"><tspan class="m b graph-t">verdict</tspan><tspan class="s m" dx="10">final_verdict()</tspan></text>
+  <rect class="box" x="96" y="566" width="440" height="70" rx="6"/>
+  <text x="112" y="590"><tspan class="m b">verdict</tspan><tspan class="s m" dx="10">final_verdict()</tspan></text>
   <text x="112" y="614">Counts rounds won → <tspan class="m">winner</tspan> = PRO, CON or TIE</text>
   <path class="edge" d="M316,636 V658" marker-end="url(#ah)"/>
   <rect class="term" x="266" y="660" width="100" height="30" rx="15"/>
   <text class="cap term-t" x="316" y="680" text-anchor="middle">END</text>
 
   <!-- ============ Shared state (right, top) ============ -->
-  <rect class="box llm" x="584" y="20" width="352" height="256" rx="12"/>
+  <rect class="box" x="584" y="20" width="352" height="256" rx="6"/>
   <text x="600" y="46"><tspan class="m b">DebateState</tspan><tspan class="s" dx="8">shared by every node</tspan></text>
   <text class="m" x="600" y="78">claim</text>         <text class="s" x="726" y="78">the topic, ≤ 600 chars</text>
   <text class="m" x="600" y="104">rounds</text>       <text class="s" x="726" y="104">how many rounds, 1–10</text>
@@ -103,9 +83,9 @@
   <text class="m" x="600" y="260">winner</text>       <text class="s" x="726" y="260">PRO, CON or TIE</text>
 
   <!-- ============ Judge parsing (right, middle) ============ -->
-  <rect class="box judge" x="584" y="296" width="352" height="246" rx="12"/>
+  <rect class="box" x="584" y="296" width="352" height="246" rx="6"/>
   <text class="b" x="600" y="322">From the judge’s reply to a score</text>
-  <rect class="code" x="600" y="334" width="320" height="84" rx="6"/>
+  <rect class="code" x="600" y="334" width="320" height="84" rx="4"/>
   <text class="m" x="612" y="354" style="font-size: 12.5px">**PRO_SCORE:** 8/10</text>
   <text class="m" x="612" y="372" style="font-size: 12.5px">CON_SCORE: 7</text>
   <text class="m" x="612" y="390" style="font-size: 12.5px">ROUND_WINNER: PRO</text>
@@ -117,7 +97,7 @@
   <text class="s m" x="600" y="530">→ {round: 1, pro: 8, con: 7, winner: "PRO"}</text>
 
   <!-- ============ Live UI (right, bottom) ============ -->
-  <rect class="box ui" x="584" y="562" width="352" height="128" rx="12"/>
+  <rect class="box" x="584" y="562" width="352" height="128" rx="6"/>
   <text class="b" x="600" y="588">How app.py shows it live</text>
   <text x="600" y="612"><tspan class="m">graph.stream()</tspan> hands back the state after</text>
   <text x="600" y="632">every node. When <tspan class="m">scores</tspan> grows, app.py draws</text>

@@ -2,45 +2,21 @@
   <title id="title">System architecture of the Multi-Agent Debate System</title>
   <desc id="desc">A visitor's browser talks to a Streamlit app (app.py) on a Hugging Face Space. app.py runs a LangGraph graph (debate_graph.py) whose three agents (pro_agent.py, con_agent.py, judge_agent.py) call three Groq models through llms.py. GitHub Actions deploys every push to main to the Space.</desc>
   <style>
-    svg {
-      --bg: #ffffff; --border: #d0d7de; --fg: #1f2328; --muted: #59636e; --line: #57606a;
-      --ui-f: #ffeff7; --ui-s: #bf3989; --graph-f: #dafbe1; --graph-s: #1a7f37;
-      --pro-f: #ddf4ff; --pro-s: #0969da; --con-f: #ffebe9; --con-s: #cf222e;
-      --judge-f: #fff8c5; --judge-s: #9a6700; --llm-f: #f6f8fa; --llm-s: #6e7781;
-      --groq-f: #fff1e9; --groq-s: #c4432b; --hf-f: #fffbeb; --hf-s: #c99a06;
-      --dev-f: #ffffff; --dev-s: #8c959f;
-    }
+    svg { --bg: #ffffff; --border: #d0d7de; --fg: #1f2328; --muted: #57606a; --stroke: #24292f; --soft: #8c959f; }
     @media (prefers-color-scheme: dark) {
-      svg {
-        --bg: #0d1117; --border: #30363d; --fg: #e6edf3; --muted: #9198a1; --line: #8b949e;
-        --ui-f: #2b1121; --ui-s: #db61a2; --graph-f: #0f2a19; --graph-s: #3fb950;
-        --pro-f: #0c2d6b; --pro-s: #58a6ff; --con-f: #3d1214; --con-s: #f85149;
-        --judge-f: #2e2408; --judge-s: #d29922; --llm-f: #161b22; --llm-s: #8b949e;
-        --groq-f: #2c1a0e; --groq-s: #f0883e; --hf-f: #17140a; --hf-s: #bb8009;
-        --dev-f: #0d1117; --dev-s: #6e7681;
-      }
+      svg { --bg: #0d1117; --border: #30363d; --fg: #e6edf3; --muted: #9198a1; --stroke: #c9d1d9; --soft: #6e7681; }
     }
     .bg { fill: var(--bg); stroke: var(--border); }
-    text { fill: var(--fg); font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Noto Sans", Helvetica, Arial, sans-serif; font-size: 14px; }
-    .t { font-size: 15px; font-weight: 600; }
-    .b { font-weight: 600; }
+    text { fill: var(--fg); font-family: Helvetica, Arial, sans-serif; font-size: 14px; }
+    .t { font-size: 15px; font-weight: bold; }
+    .b { font-weight: bold; }
     .s { fill: var(--muted); font-size: 12.5px; }
-    .m { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-    .cap { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; fill: var(--muted); }
-    .box { stroke-width: 1.5; }
-    .ui { fill: var(--ui-f); stroke: var(--ui-s); }
-    .graph { fill: var(--graph-f); stroke: var(--graph-s); }
-    .pro { fill: var(--pro-f); stroke: var(--pro-s); }
-    .con { fill: var(--con-f); stroke: var(--con-s); }
-    .judge { fill: var(--judge-f); stroke: var(--judge-s); }
-    .llm { fill: var(--llm-f); stroke: var(--llm-s); }
-    .groq { fill: var(--groq-f); stroke: var(--groq-s); }
-    .hf { fill: var(--hf-f); stroke: var(--hf-s); stroke-dasharray: 7 5; }
-    .dev { fill: var(--dev-f); stroke: var(--dev-s); }
-    .chip { fill: var(--bg); }
-    .pro-c { fill: var(--pro-s); } .con-c { fill: var(--con-s); } .judge-c { fill: var(--judge-s); }
-    .edge { fill: none; stroke: var(--line); stroke-width: 1.6; }
-    .head { fill: var(--line); }
+    .m { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .cap { font-size: 11.5px; font-weight: bold; letter-spacing: 0.08em; fill: var(--muted); }
+    .box { fill: var(--bg); stroke: var(--stroke); stroke-width: 1.4; }
+    .group { fill: none; stroke: var(--soft); stroke-width: 1.4; stroke-dasharray: 6 4; }
+    .edge { fill: none; stroke: var(--stroke); stroke-width: 1.4; }
+    .head { fill: var(--stroke); }
   </style>
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -48,10 +24,10 @@
     </marker>
   </defs>
 
-  <rect class="bg" x="0.5" y="0.5" width="959" height="639" rx="12"/>
+  <rect class="bg" x="0.5" y="0.5" width="959" height="639" rx="8"/>
 
   <!-- Visitor -->
-  <rect class="box dev" x="164" y="20" width="320" height="52" rx="10"/>
+  <rect class="box" x="164" y="20" width="320" height="52" rx="6"/>
   <text class="t" x="324" y="42" text-anchor="middle">Visitor’s browser</text>
   <text class="s" x="324" y="61" text-anchor="middle">types a claim, picks 1–10 rounds</text>
   <path class="edge" d="M290,72 V118" marker-end="url(#ah)"/>
@@ -60,68 +36,65 @@
   <text class="s" x="366" y="101">each round as soon as it’s judged, then the verdict</text>
 
   <!-- Hugging Face Space -->
-  <rect class="box hf" x="24" y="120" width="620" height="372" rx="14"/>
+  <rect class="group" x="24" y="120" width="620" height="372" rx="8"/>
   <text class="t" x="44" y="146">Hugging Face Space</text>
   <text class="s" x="210" y="146">Streamlit SDK 1.45 · Python 3.10 · pinned requirements.txt</text>
 
-  <rect class="box ui" x="44" y="162" width="580" height="60" rx="10"/>
+  <rect class="box" x="44" y="162" width="580" height="60" rx="6"/>
   <text x="60" y="186"><tspan class="m b">app.py</tspan><tspan> — Streamlit UI</tspan></text>
   <text class="s" x="60" y="207">key check · claim ≤ 600 chars · live rounds · friendly errors · st.session_state</text>
   <path class="edge" d="M334,222 V238" marker-end="url(#ah)"/>
 
-  <rect class="box graph" x="44" y="240" width="580" height="60" rx="10"/>
+  <rect class="box" x="44" y="240" width="580" height="60" rx="6"/>
   <text x="60" y="264"><tspan class="m b">debate_graph.py</tspan><tspan> — LangGraph StateGraph</tspan></text>
   <text class="s" x="60" y="285">pro → con → judge, repeated for each round → verdict · step limit 3 × rounds + 5</text>
   <path class="edge" d="M134,300 V320" marker-end="url(#ah)"/>
   <path class="edge" d="M334,300 V320" marker-end="url(#ah)"/>
   <path class="edge" d="M534,300 V320" marker-end="url(#ah)"/>
 
-  <rect class="box pro" x="44" y="322" width="180" height="56" rx="10"/>
+  <rect class="box" x="44" y="322" width="180" height="56" rx="6"/>
   <text class="m b" x="134" y="345" text-anchor="middle">pro_agent.py</text>
   <text class="s" x="134" y="366" text-anchor="middle">argues FOR the claim</text>
-  <rect class="box con" x="244" y="322" width="180" height="56" rx="10"/>
+  <rect class="box" x="244" y="322" width="180" height="56" rx="6"/>
   <text class="m b" x="334" y="345" text-anchor="middle">con_agent.py</text>
   <text class="s" x="334" y="366" text-anchor="middle">argues AGAINST it</text>
-  <rect class="box judge" x="444" y="322" width="180" height="56" rx="10"/>
+  <rect class="box" x="444" y="322" width="180" height="56" rx="6"/>
   <text class="m b" x="534" y="345" text-anchor="middle">judge_agent.py</text>
   <text class="s" x="534" y="366" text-anchor="middle">scores 1–10, picks a winner</text>
   <path class="edge" d="M134,378 V398" marker-end="url(#ah)"/>
   <path class="edge" d="M334,378 V398" marker-end="url(#ah)"/>
   <path class="edge" d="M534,378 V398" marker-end="url(#ah)"/>
 
-  <rect class="box llm" x="44" y="400" width="580" height="60" rx="10"/>
+  <rect class="box" x="44" y="400" width="580" height="60" rx="6"/>
   <text x="60" y="424"><tspan class="m b">llms.py</tspan><tspan> — model names in one place + 3 ChatGroq clients</tspan></text>
   <text class="s" x="60" y="445">reads GROQ_API_KEY · swap models with PRO_MODEL, CON_MODEL, JUDGE_MODEL</text>
 
   <!-- Groq -->
   <path class="edge" d="M624,430 H682" marker-end="url(#ah)"/>
-  <rect class="box groq" x="684" y="270" width="252" height="184" rx="12"/>
+  <rect class="box" x="684" y="270" width="252" height="184" rx="6"/>
   <text class="t" x="700" y="296">Groq API</text>
   <text class="s" x="700" y="315">free tier · per-minute rate limits</text>
-  <rect class="box chip" x="698" y="328" width="224" height="34" rx="8" style="stroke: var(--pro-s)"/>
-  <circle class="pro-c" cx="714" cy="345" r="5"/>
-  <text class="b" x="726" y="350">PRO</text>
-  <text class="m" x="776" y="350" style="font-size: 12.5px">openai/gpt-oss-20b</text>
-  <rect class="box chip" x="698" y="370" width="224" height="34" rx="8" style="stroke: var(--con-s)"/>
-  <circle class="con-c" cx="714" cy="387" r="5"/>
-  <text class="b" x="726" y="392">CON</text>
-  <text class="m" x="776" y="392" style="font-size: 12.5px">qwen/qwen3.8-27b</text>
-  <rect class="box chip" x="698" y="412" width="224" height="34" rx="8" style="stroke: var(--judge-s)"/>
-  <circle class="judge-c" cx="714" cy="429" r="5"/>
-  <text class="b" x="726" y="434">JUDGE</text>
-  <text class="m" x="776" y="434" style="font-size: 12.5px">openai/gpt-oss-120b</text>
+  <rect class="box" x="698" y="328" width="224" height="34" rx="4"/>
+  <text class="b" x="712" y="350">PRO</text>
+  <text class="m" x="770" y="350" style="font-size: 12.5px">openai/gpt-oss-20b</text>
+  <rect class="box" x="698" y="370" width="224" height="34" rx="4"/>
+  <text class="b" x="712" y="392">CON</text>
+  <text class="m" x="770" y="392" style="font-size: 12.5px">qwen/qwen3.8-27b</text>
+  <rect class="box" x="698" y="412" width="224" height="34" rx="4"/>
+  <text class="b" x="712" y="434">JUDGE</text>
+  <text class="m" x="770" y="434" style="font-size: 12.5px">openai/gpt-oss-120b</text>
 
   <!-- Deployment -->
   <text class="cap" x="24" y="532">DEPLOYMENT</text>
-  <rect class="box dev" x="24" y="548" width="140" height="56" rx="10"/>
+  <rect class="box" x="24" y="548" width="140" height="56" rx="6"/>
   <text class="b" x="94" y="571" text-anchor="middle">Developer</text>
   <text class="s m" x="94" y="592" text-anchor="middle">git push</text>
   <path class="edge" d="M164,576 H202" marker-end="url(#ah)"/>
-  <rect class="box dev" x="204" y="548" width="180" height="56" rx="10"/>
+  <rect class="box" x="204" y="548" width="180" height="56" rx="6"/>
   <text class="b" x="294" y="571" text-anchor="middle">GitHub repo</text>
   <text class="s m" x="294" y="592" text-anchor="middle">branch main</text>
   <path class="edge" d="M384,576 H422" marker-end="url(#ah)"/>
-  <rect class="box dev" x="424" y="548" width="220" height="56" rx="10"/>
+  <rect class="box" x="424" y="548" width="220" height="56" rx="6"/>
   <text class="b" x="534" y="571" text-anchor="middle">GitHub Actions</text>
   <text class="s m" x="534" y="592" text-anchor="middle">sync-to-hf.yml</text>
   <path class="edge" d="M534,548 V494" marker-end="url(#ah)"/>

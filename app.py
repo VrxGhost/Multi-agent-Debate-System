@@ -129,17 +129,18 @@ if start and claim:
     # final winner
     st.markdown("## 🏆 Final Result")
 
-    total_pro = sum(s["pro"] for s in result["scores"])
-    total_con = sum(s["con"] for s in result["scores"])
+    pro_wins = sum(1 for s in result["scores"] if s["winner"] == "PRO")
+    con_wins = sum(1 for s in result["scores"] if s["winner"] == "CON")
     winner = result["winner"]
 
     w1, w2, w3 = st.columns(3)
     with w1:
-        st.metric("Total PRO Score", f"{total_pro}")
+        st.metric("Rounds won by PRO", pro_wins)
     with w2:
-        st.metric("Total CON Score", f"{total_con}")
+        st.metric("Rounds won by CON", con_wins)
     with w3:
         st.metric("🏆 Winner", winner)
+    st.caption("The side that wins more rounds wins the debate. Tied rounds count for neither side.")
 
     if winner == "PRO":
         st.success("🏆 PRO side wins the debate!")

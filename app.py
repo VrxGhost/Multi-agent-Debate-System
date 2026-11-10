@@ -17,7 +17,7 @@ if not os.getenv("GROQ_API_KEY"):
     )
     st.stop()
 
-from debate_graph import build_graph # noqa: E402  (needs the key, so it must come after the check)
+from debate_graph import build_graph, recursion_limit_for # noqa: E402  (needs the key, so it must come after the check)
 
 from llms import MODELS  # noqa: E402
 
@@ -94,7 +94,7 @@ if start:
     st.divider()
 
     with st.spinner("Agents are debating... please wait"):
-        result = graph.invoke(initial_state)
+        result = graph.invoke(initial_state, {"recursion_limit": recursion_limit_for(rounds)})
 
     # display each round
     for score in result["scores"]:

@@ -32,6 +32,10 @@ def final_verdict(state: DebateState) -> DebateState:
         state["winner"] = "TIE"
     return state
 
+def recursion_limit_for(rounds: int) -> int:
+    """LangGraph's step limit: 3 steps per round (pro, con, judge) + 1 verdict + some headroom."""
+    return 3 * rounds + 5
+
 def build_graph():
     graph = StateGraph(DebateState)
     graph.add_node("pro", pro_agent)

@@ -9,5 +9,8 @@ def con_agent(state):
         SystemMessage(content=f"Argue AGAINST: '{claim}'. Max 3 sentences but dont start with the starting line like Here's a counterargument or the 3 sentence against it are :- ."),
         HumanMessage(content=f"Counter this: '{last_pro}'")
     ])
-    state["con_arguments"].append(response.content)
+    arg = response.content
+    state["con_arguments"].append(arg)
+    state["debate_log"].append({"round": state["current_round"], "side": "CON", "argument": arg})
+
     return state                  

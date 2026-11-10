@@ -49,5 +49,11 @@ def judge_agent(state):
     ])
     score = parse_verdict(response.text, state["current_round"])
     state["scores"].append(score)   # ← saves score to state
+    state["debate_log"].append({
+    "round": state["current_round"],
+    "side": "JUDGE",
+    "argument": f"PRO {score['pro']}/10 vs CON {score['con']}/10, winner: {score['winner']}. {score['reason']}",
+    })
+
     state["current_round"] += 1
     return state

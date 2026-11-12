@@ -7,11 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 st.set_page_config(
     page_title="AI Debate Arena",
-    page_icon="⚖️",
+    page_icon=":material/balance:",
     layout="wide"
 )
 
-st.title("⚖️ Multi-Agent Debate Arena")
+st.title(":material/balance: Multi-Agent Debate Arena")
 st.caption("Two LLMs argue a claim across multiple rounds. A judge scores each round and declares a winner.")
 if not os.getenv("GROQ_API_KEY"):
     st.error(
@@ -29,17 +29,17 @@ MAX_ROUNDS = max(2, int(os.getenv("MAX_ROUNDS", "10")))  # e.g. MAX_ROUNDS=5 in 
 
 def show_round(score, pro_argument, con_argument):
     """Draw one finished round: both arguments, the judge's scores and the reason."""
-    st.markdown(f"## ♦️ Round {score['round']}")
+    st.markdown(f"## Round {score['round']}")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("### 🔵 PRO")
+        st.badge("PRO", icon=":material/thumb_up:", color="blue")
         st.info(pro_argument)
     with col2:
-        st.markdown("### 🔴 CON")
+        st.badge("CON", icon=":material/thumb_down:", color="red")
         st.error(con_argument)
 
-    st.markdown("#### ⚖️ Judge's Verdict")
+    st.markdown("#### :material/gavel: Judge's Verdict")
     j1, j2, j3 = st.columns(3)
     with j1:
         st.metric(label="PRO Score", value=f"{score['pro']}/10")
@@ -48,20 +48,20 @@ def show_round(score, pro_argument, con_argument):
     with j3:
         st.metric(label="Round Winner", value=score["winner"])
 
-    st.caption(f"🧠 Judge's reasoning: {score['reason']}")
+    st.caption(f"Judge's reasoning: {score['reason']}")
     st.divider()
 
 
 def show_topic(claim):
     """Draw the claim being debated."""
-    st.markdown("## 📋 Debate Topic")
+    st.markdown("## Debate Topic")
     st.info(f'"{claim}"')
     st.divider()
 
 
 def show_final_result(result):
     """Draw the overall winner and the full debate log of a finished debate."""
-    st.markdown("## 🏆 Final Result")
+    st.markdown("## Final Result")
 
     pro_wins = sum(1 for s in result["scores"] if s["winner"] == "PRO")
     con_wins = sum(1 for s in result["scores"] if s["winner"] == "CON")
@@ -73,31 +73,31 @@ def show_final_result(result):
     with w2:
         st.metric("Rounds won by CON", con_wins)
     with w3:
-        st.metric("🏆 Winner", winner)
+        st.metric("Winner", winner)
     st.caption("The side that wins more rounds wins the debate. Tied rounds count for neither side.")
 
     if winner == "PRO":
-        st.success("🏆 PRO side wins the debate!")
+        st.success("PRO side wins the debate!", icon=":material/emoji_events:")
     elif winner == "CON":
-        st.error("🏆 CON side wins the debate!")
+        st.error("CON side wins the debate!", icon=":material/emoji_events:")
     else:
-        st.warning("🤝 It's a TIE!")
+        st.warning("It's a TIE!", icon=":material/handshake:")
 
-    with st.expander("📜 View Full Debate Log"):
+    with st.expander("View Full Debate Log", icon=":material/history:"):
         for entry in result["debate_log"]:
             if entry["side"] == "PRO":
-                st.markdown(f"**🔵 PRO — Round {entry['round']}**")
+                st.markdown(f":blue-badge[PRO] **Round {entry['round']}**")
                 st.info(entry["argument"])
             elif entry["side"] == "CON":
-                st.markdown(f"**🔴 CON — Round {entry['round']}**")
+                st.markdown(f":red-badge[CON] **Round {entry['round']}**")
                 st.error(entry["argument"])
             elif entry["side"] == "JUDGE":
-                st.markdown(f"**⚖️ JUDGE — Round {entry['round']}**")
+                st.markdown(f":gray-badge[JUDGE] **Round {entry['round']}**")
                 st.warning(entry["argument"])
 
 
 with st.sidebar:
-    st.header("⚙️ Debate Settings")
+    st.header(":material/tune: Debate Settings")
     st.divider()
     
     claim = st.text_area(
@@ -119,13 +119,14 @@ with st.sidebar:
     st.divider()
 
     st.markdown("**Models being used:**")
-    st.markdown(f"🔵 PRO — `{MODELS['PRO']}`")
-    st.markdown(f"🔴 CON — `{MODELS['CON']}`")
-    st.markdown(f"⚖️ JUDGE — `{MODELS['JUDGE']}`")
+    st.markdown(f":blue-badge[PRO] `{MODELS['PRO']}`")
+    st.markdown(f":red-badge[CON] `{MODELS['CON']}`")
+    st.markdown(f":gray-badge[JUDGE] `{MODELS['JUDGE']}`")
     st.divider()
 
     start = st.button(
-        "🚀 Start Debate",
+        "Start Debate",
+        icon=":material/play_arrow:",
         type="primary",
         use_container_width=True
     )
@@ -183,22 +184,22 @@ if start:
 
 elif "debate" in st.session_state:
     result = st.session_state["debate"]  # the last finished debate, redrawn without any API calls
-    st.caption("🔁 This is your last debate. Click Start Debate to run a new one.")
+    st.caption(":material/replay: This is your last debate. Click Start Debate to run a new one.")
     show_topic(result["claim"])
     for i, score in enumerate(result["scores"]):
         show_round(score, result["pro_arguments"][i], result["con_arguments"][i])
     show_final_result(result)
 
 else:
-    st.info("👈 Set your claim and number of rounds in the sidebar, then click Start Debate!")
+    st.info("Set your claim and number of rounds in the sidebar, then click Start Debate!", icon=":material/arrow_back:")
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown("### 🔵 PRO Agent")
+        st.markdown("### :material/thumb_up: PRO Agent")
         st.write("Argues strongly FOR the claim")
     with col2:
-        st.markdown("### 🔴 CON Agent")
+        st.markdown("### :material/thumb_down: CON Agent")
         st.write("Argues strongly AGAINST the claim")
     with col3:
-        st.markdown("### ⚖️ Judge Agent")
+        st.markdown("### :material/gavel: Judge Agent")
         st.write("Scores each round and declares the overall winner")

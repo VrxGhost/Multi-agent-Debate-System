@@ -34,10 +34,10 @@ def show_round(score, pro_argument, con_argument):
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("### :blue-background[:material/thumb_up: PRO]")
-    st.info(pro_argument)
+        st.info(pro_argument)
     with col2:
         st.markdown("### :red-background[:material/thumb_down: CON]")
-    st.error(con_argument)
+        st.error(con_argument)
     st.markdown("#### :material/gavel: Judge's Verdict")
     j1, j2, j3 = st.columns(3)
     with j1:
